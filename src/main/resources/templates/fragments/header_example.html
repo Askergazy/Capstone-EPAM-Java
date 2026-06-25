@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<div th:fragment="headerFragment" class="header">
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Product Page User</title>
+    <link rel="stylesheet" href="/css/header_example.css">
+</head>
+
+
+
+
+
+
+
+     <div th:if="${!#authorization.expression('hasRole(''ADMIN'')')}">
+
+        <div class="header-container">
+            <div class="logo">
+
+                <a class="logo" th:href="@{/products/main}">
+                    <img class="logo" th:src="@{/image/logo.png}"  alt="" />
+                </a>
+            </div>
+
+
+
+
+            <div class="search">
+                <form  th:action="@{/products/main/search}" method="get">
+                    <input type="text" id="name" name="name" placeholder="Поиск по имени товара">
+                    <button type="submit">Поиск</button>
+                </form>
+            </div>
+
+
+            <div class="filter">
+                <select onchange="location.href = '/products/main/category/' + this.value;">
+                    <option value="" selected disabled hidden>Выберите категорию</option>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                </select>
+            </div>
+
+            <div class="nav" th:if="${userIsEmpty}">
+                <a th:href="@{/login}">Вход</a>
+                <a th:href="@{/auth/registration}">Регистрация</a>
+
+            </div>
+
+            <div  class="nav" th:if="!${userIsEmpty}">
+                <a th:href="@{/profile}">Личный кабинет</a>
+            </div>
+
+            <div  class="nav">
+                <a th:href="@{/cart}">Корзина</a>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+        <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+
+            <div class="header-container">
+                <div class="logo">
+
+                    <a class="logo" th:href="@{/products/main}">
+                        <img class="logo" th:src="@{/image/logo.png}"  alt="" />
+                    </a>
+                </div>
+
+
+
+
+                <div class="search">
+                    <form  th:action="@{/products/main/search}" method="get">
+                        <input type="text"  name="name" placeholder="Поиск по имени товара">
+                        <button type="submit">Поиск</button>
+                    </form>
+                </div>
+
+
+                <div class="filter">
+                    <select onchange="location.href = '/products/main/category/' + this.value;">
+                        <option value="" selected disabled hidden>Выберите категорию</option>
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                    </select>
+                </div>
+
+                <div class="nav" th:if="${userIsEmpty}">
+                    <a th:href="@{/auth/login}">Вход</a>
+
+                </div>
+
+                <div  class="nav" th:if="!${userIsEmpty}">
+                    <a th:href="@{/profile}">Личный кабинет</a>
+                </div>
+
+                <div  class="nav">
+                    <a th:href="@{/cart}">Корзина</a>
+                </div>
+
+                <div class="nav">
+                    <a th:href="@{/products/admin}">CRUD</a>
+                </div>
+
+            </div>
+
+
+
+</div>
+
+
+
+
+    </div>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

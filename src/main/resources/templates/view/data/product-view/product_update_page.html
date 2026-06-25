@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/product_update_page.css">
+    <title>Update Product</title>
+</head>
+<div th:insert="fragments/header_example::headerFragment"></div>
+
+<body>
+
+
+<form th:action="@{/products/update}" th:object="${product}" method="post" class="update-product-form">
+    <h1>Обновить товар</h1>
+
+    <img th:src="@{'/images/' + ${product.image}}" alt="Product Image" width="150"/>
+
+    <input type="hidden" name="productId" th:value="${product.id}">
+    <label class="form-label">
+        Product Name:
+        <input type="text" th:field="*{name}" class="form-input" required>
+    </label><br>
+
+    <label class="form-label">
+        Product Price:
+        <input type="number" th:field="*{price}" class="form-input" required>
+    </label><br>
+
+    <br>
+    <th:block th:if="${!product.getCharacteristicValues().isEmpty()}">
+        <p class="form-label">Характеристики:</p>
+        <div th:each="value : ${product.getCharacteristicValues()}" class="characteristics-container">
+            <b class="form-label" th:text="${value.getCharacteristic().getName()}"></b>
+            <input type="text" name="values" th:value="${value.getValue()}" class="form-input" /><br />
+        </div>
+    </th:block>
+
+    <button type="submit" class="form-button">Update</button>
+</form>
+
+<!--<form th:action="@{/products/update}" th:object="${product}" method="post">-->
+<!--    <h1>Обновить товар</h1>-->
+
+
+<!--    <img th:src="@{'/images/' + ${product.image}}" alt="Product Image" width="50"/>-->
+
+<!--    <input type="hidden" name="productId" th:value="${product.id}">-->
+<!--    <label>-->
+<!--        Product Name:-->
+<!--        <input type="text" th:field="*{name}" required>-->
+<!--    </label><br>-->
+
+
+
+<!--    <label>-->
+<!--        Product Price:-->
+<!--        <input type="number" th:field="*{price}" required>-->
+<!--    </label><br>-->
+
+<!-- <br>-->
+<!--   <th:block th:if="${!product.getCharacteristicValues().isEmpty()}">-->
+<!--       Характеристики :-->
+<!--       <div th:each="value : ${product.getCharacteristicValues()}">-->
+<!--           <b th:text="${value.getCharacteristic().getName()}"></b>-->
+<!--           <input type="text" name="values" th:value="${value.getValue()}" /><br />-->
+<!--       </div>-->
+
+<!--   </th:block>-->
+
+
+
+<!--    <button type="submit">Update</button>-->
+</form>
+<br>
+</body>
+</html>

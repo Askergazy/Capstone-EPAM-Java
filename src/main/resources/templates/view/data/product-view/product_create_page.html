@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Product Form</title>
+    <link rel="stylesheet" href="/css/product_create_page.css">
+
+</head>
+<body>
+
+<div th:insert="fragments/header_example::headerFragment"></div>
+
+
+<div class="filter1">
+    <select onchange="location.href = '/products/createByCategory' + this.value;">
+        <option value="" selected disabled hidden>Выберите категорию</option>
+        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+    </select>
+</div>
+
+
+
+</body>
+
+
+
+
+
+
+</html>
+

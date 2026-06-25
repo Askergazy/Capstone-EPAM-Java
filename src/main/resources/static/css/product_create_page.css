@@ -1,0 +1,33 @@
+*{
+    box-sizing: border-box;
+
+}
+
+
+.filter1 {
+    display: flex;
+    align-self: center;
+    margin: 20px 20px ;
+    position: relative;
+}
+
+.filter1 .select-container {
+
+    position: relative;
+}
+
+.filter1 select {
+    display: flex;
+    width: 300px;
+    background-color: #33c52d;
+     color: white;
+    padding: 10px;
+    font-size: 1rem;
+    border: 3px solid green;
+    border-radius: 5px;
+    box-sizing: border-box;
+    appearance: none;
+}
+
+
+
