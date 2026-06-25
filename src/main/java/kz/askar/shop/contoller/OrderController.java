@@ -38,11 +38,11 @@ public class OrderController {
 
         int sum = 0;
 
-        for (CartItem cartItem : cartItemList){
-            sum+= cartItem.getProduct().getPrice() * cartItem.getQuantity();
-        }
+        for (CartItem cartItem : cartItemList) {
+            sum += cartItem.getProduct().getPrice() * cartItem.getQuantity();
+        } //убрать в сервис
 
-        model.addAttribute("sum",sum);
+        model.addAttribute("sum", sum);
 
 
         return "view/data/order-view/order_main";
@@ -55,10 +55,7 @@ public class OrderController {
         List<CartItem> cartItemList = cartItemService.getCartItemsByUser(user);
 
 
-        String address = addressParam;
-
-
-        Order order = orderService.createOrder(user, address);
+        Order order = orderService.createOrder(user, addressParam);
         orderedProductService.createOrderedProduct(cartItemList, order);
 
 
@@ -69,36 +66,33 @@ public class OrderController {
     }
 
 
-
     @GetMapping("/view")
     public String orderView(@RequestParam("orderId") Long orderId,
-                            Model model){
+                            Model model) {
         Order order = orderService.findById(orderId).orElseThrow();
 
 
         int sum = 0;
 
-        for (OrderedProduct orderedProduct :order.getOrderedProducts()){
+        for (OrderedProduct orderedProduct : order.getOrderedProducts()) {
             sum += orderedProduct.getProduct().getPrice() * orderedProduct.getCount();
-        }
+        } // Убрать в сервис
 
-        model.addAttribute("order",order);
-        model.addAttribute("sum",sum);
+        model.addAttribute("order", order);
+        model.addAttribute("sum", sum);
 
         List<Status> statuses = List.of(Status.values());
-        model.addAttribute("statuses",statuses);
+        model.addAttribute("statuses", statuses);
 
         User user = userService.getCurrentUser();
-        model.addAttribute("user",user);
+        model.addAttribute("user", user);
         return "view/data/order-view/order-view";
     }
 
     @PostMapping("/view")
-    public String changeStatus(@RequestParam("orderId")Long orderId,
-                               @RequestParam("status")Status status,
-                               Model model){
-
-
+    public String changeStatus(@RequestParam("orderId") Long orderId,
+                               @RequestParam("status") Status status,
+                               Model model) {
 
 
         Order order = orderService.findById(orderId).orElseThrow();
@@ -110,18 +104,15 @@ public class OrderController {
     }
 
 
-
-
-
     @GetMapping("/moderate")
-    public String moderateOrders(Model model){
+    public String moderateOrders(Model model) {
 
         List<Order> orders = orderService.findAll();
 
-        model.addAttribute("orders",orders);
+        model.addAttribute("orders", orders);
 
 
-     return "view/data/admin-view/order_moderator_page";
+        return "view/data/admin-view/order_moderator_page";
     }
 
 

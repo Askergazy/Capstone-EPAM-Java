@@ -11,7 +11,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "ordered_products")
-public class OrderedProduct {
+public class
+OrderedProduct {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
