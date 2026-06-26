@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn clean compile:*)",
+      "Bash(mvn clean package:*)",
+      "Bash(mvn test)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd //c \"taskkill /PID 22808 /F\")",
+      "Bash(mvn tomcat7:run:*)",
+      "Bash(timeout /t 15 /nobreak)",
+      "Bash(mvn clean:*)",
+      "Bash(curl:*)",
+      "Bash(test:*)",
+      "Bash(dir \"C:\\\\Users\\\\askar\\\\IdeaProjects\\\\Spring-Shop\\\\src\\\\main\\\\webapp\")",
+      "Bash(mvn package:*)",
+      "Bash(cmd //c \"taskkill /PID 18988 /F\")",
+      "Bash(mvn cargo:run:*)",
+      "Bash(cmd //c \"taskkill /PID 26440 /F\")",
+      "Bash(cmd //c \"taskkill /PID 12532 /F\")",
+      "Bash(mvn compile package:*)",
+      "Bash(cmd //c \"taskkill /PID 23200 /F\")",
+      "Bash(psql:*)",
+      "Bash(where:*)",
+      "Bash(dir \"C:\\\\Program Files\\\\PostgreSQL\\\\*\\\\bin\\\\psql.exe\")",
+      "Bash(mvn cargo:stop:*)",
+      "Bash(timeout /t 30 /nobreak)",
+      "Bash(powershell:*)",
+      "Bash(timeout /t 15)",
+      "Bash(./mvnw.cmd spring-boot:run)",
+      "Bash(mvn spring-boot:run:*)"
+    ]
+  }
+}

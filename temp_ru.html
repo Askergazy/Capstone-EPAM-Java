@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Каталог товаров">
+    <title>Каталог товаров | Online Shop</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/products.css">
+    <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+    <div class="header-container">
+        <!-- Logo -->
+        <a href="/products/main" class="logo">
+            <img src="/image/logo.png" alt="Online Shop" />
+            <span>Online Shop</span>
+        </a>
+
+        <!-- Search Form -->
+        <form action="/products/main/search" method="get" class="search-form">
+            <input type="search"
+                   name="name"
+                   class="search-input"
+                   placeholder="Поиск товаров..."
+                   aria-label="Поиск товаров..."
+                   autocomplete="off">
+            <button type="submit" class="search-button" aria-label="Найти">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                </svg>
+            </button>
+        </form>
+
+        <!-- Category Filter -->
+        <div class="category-filter">
+            <select class="category-select" aria-label="Категория">
+                <option value="">Все категории</option>
+                <option value="1">Мышки</option>
+                <option value="2">Наушники</option>
+                <option value="3">Клавиатуры</option>
+            </select>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="language-switcher">
+            <a href="?lang=ru" class="lang-link" title="Русский">RU</a>
+            <span class="lang-divider">|</span>
+            <a href="?lang=en" class="lang-link" title="English">EN</a>
+            <span class="lang-divider">|</span>
+            <a href="?lang=kk" class="lang-link" title="Қазақша">KZ</a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav" role="navigation">
+            <!-- Guest Navigation -->
+            <div class="flex gap-2">
+                <a href="/login" class="nav-link">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Вход</span>
+                </a>
+                <a href="/auth/registration" class="nav-link nav-link-primary">Регистрация</a>
+            </div>
+
+            <!-- Authenticated User Navigation -->
+            
+        </nav>
+    </div>
+</header>
+
+    <!-- Main Content -->
+    <main class="products-container">
+        <div class="container">
+            <!-- Page Header -->
+            <header class="products-header">
+                <h1 class="products-title">Каталог товаров</h1>
+                <p class="products-subtitle">Найдите лучшие товары по выгодным ценам</p>
+            </header>
+
+            <!-- Filters Section -->
+            <div class="filters-container">
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <label for="sort-select" class="form-label">Сортировка</label>
+                        <select id="sort-select" class="form-select">
+                            <option value="popular">По популярности</option>
+                            <option value="price-asc">Сначала дешевле</option>
+                            <option value="price-desc">Сначала дороже</option>
+                            <option value="new">Новинки</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="product-grid">
+                <article class="product-card animate-on-scroll">
+                    <!-- Product Image -->
+                    <div class="product-image-wrapper">
+                        <a href="/products/view?productId=7">
+                            <img class="product-image"
+                                 src="/images/beats.jpg"
+                                 alt="Beats Studio Pro"
+                                 loading="lazy">
+                        </a>
+                    </div>
+
+                    <!-- Product Body -->
+                    <div class="product-body">
+                        <!-- Category -->
+                        <div class="product-category"></div>
+
+                        <!-- Product Name -->
+                        <h2 class="product-name">
+                            <a href="/products/view?productId=7">Beats Studio Pro</a>
+                        </h2>
+
+                        <!-- Product Footer -->
+                        <div class="product-footer">
+                            <!-- Price -->
+                            <div class="product-price">
+                                <span>160000</span>
+                                <span class="product-price-currency">₸</span>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <a href="/cart/add?productId=7"
+                               class="btn-add-to-cart"
+                               title="Добавить в корзину">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                                </svg>
+                                <span>В корзину</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                <article class="product-card animate-on-scroll">
+                    <!-- Product Image -->
+                    <div class="product-image-wrapper">
+                        <a href="/products/view?productId=8">
+                            <img class="product-image"
+                                 src="/images/SONY.jpg"
+                                 alt="Sony WH-1000XM6"
+                                 loading="lazy">
+                        </a>
+                    </div>
+
+                    <!-- Product Body -->
+                    <div class="product-body">
+                        <!-- Category -->
+                        <div class="product-category"></div>
+
+                        <!-- Product Name -->
+                        <h2 class="product-name">
+                            <a href="/products/view?productId=8">Sony WH-1000XM6</a>
+                        </h2>
+
+                        <!-- Product Footer -->
+                        <div class="product-footer">
+                            <!-- Price -->
+                            <div class="product-price">
+                                <span>150000</span>
+                                <span class="product-price-currency">₸</span>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <a href="/cart/add?productId=8"
+                               class="btn-add-to-cart"
+                               title="Добавить в корзину">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                                </svg>
+                                <span>В корзину</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                <article class="product-card animate-on-scroll">
+                    <!-- Product Image -->
+                    <div class="product-image-wrapper">
+                        <a href="/products/view?productId=4">
+                            <img class="product-image"
+                                 src="/images/razer_vaper.jpg"
+                                 alt="Razer viper  "
+                                 loading="lazy">
+                        </a>
+                    </div>
+
+                    <!-- Product Body -->
+                    <div class="product-body">
+                        <!-- Category -->
+                        <div class="product-category"></div>
+
+                        <!-- Product Name -->
+                        <h2 class="product-name">
+                            <a href="/products/view?productId=4">Razer viper  </a>
+                        </h2>
+
+                        <!-- Product Footer -->
+                        <div class="product-footer">
+                            <!-- Price -->
+                            <div class="product-price">
+                                <span>30000</span>
+                                <span class="product-price-currency">₸</span>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <a href="/cart/add?productId=4"
+                               class="btn-add-to-cart"
+                               title="Добавить в корзину">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                                </svg>
+                                <span>В корзину</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                <article class="product-card animate-on-scroll">
+                    <!-- Product Image -->
+                    <div class="product-image-wrapper">
+                        <a href="/products/view?productId=3">
+                            <img class="product-image"
+                                 src="/images/63859409584158.jpg"
+                                 alt="Logitech G304"
+                                 loading="lazy">
+                        </a>
+                    </div>
+
+                    <!-- Product Body -->
+                    <div class="product-body">
+                        <!-- Category -->
+                        <div class="product-category"></div>
+
+                        <!-- Product Name -->
+                        <h2 class="product-name">
+                            <a href="/products/view?productId=3">Logitech G304</a>
+                        </h2>
+
+                        <!-- Product Footer -->
+                        <div class="product-footer">
+                            <!-- Price -->
+                            <div class="product-price">
+                                <span>25000</span>
+                                <span class="product-price-currency">₸</span>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <a href="/cart/add?productId=3"
+                               class="btn-add-to-cart"
+                               title="Добавить в корзину">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                                </svg>
+                                <span>В корзину</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                <article class="product-card animate-on-scroll">
+                    <!-- Product Image -->
+                    <div class="product-image-wrapper">
+                        <a href="/products/view?productId=6">
+                            <img class="product-image"
+                                 src="/images/airpods.jpg"
+                                 alt="Apple AirPods 3"
+                                 loading="lazy">
+                        </a>
+                    </div>
+
+                    <!-- Product Body -->
+                    <div class="product-body">
+                        <!-- Category -->
+                        <div class="product-category"></div>
+
+                        <!-- Product Name -->
+                        <h2 class="product-name">
+                            <a href="/products/view?productId=6">Apple AirPods 3</a>
+                        </h2>
+
+                        <!-- Product Footer -->
+                        <div class="product-footer">
+                            <!-- Price -->
+                            <div class="product-price">
+                                <span>60000</span>
+                                <span class="product-price-currency">₸</span>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <a href="/cart/add?productId=6"
+                               class="btn-add-to-cart"
+                               title="Добавить в корзину">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                                </svg>
+                                <span>В корзину</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                <article class="product-card animate-on-scroll">
+                    <!-- Product Image -->
+                    <div class="product-image-wrapper">
+                        <a href="/products/view?productId=5">
+                            <img class="product-image"
+                                 src="/images/hyperx.jpg"
+                                 alt="Hyperx Pulsefire"
+                                 loading="lazy">
+                        </a>
+                    </div>
+
+                    <!-- Product Body -->
+                    <div class="product-body">
+                        <!-- Category -->
+                        <div class="product-category"></div>
+
+                        <!-- Product Name -->
+                        <h2 class="product-name">
+                            <a href="/products/view?productId=5">Hyperx Pulsefire</a>
+                        </h2>
+
+                        <!-- Product Footer -->
+                        <div class="product-footer">
+                            <!-- Price -->
+                            <div class="product-price">
+                                <span>27000</span>
+                                <span class="product-price-currency">₸</span>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <a href="/cart/add?productId=5"
+                               class="btn-add-to-cart"
+                               title="Добавить в корзину">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                                </svg>
+                                <span>В корзину</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                <article class="product-card animate-on-scroll">
+                    <!-- Product Image -->
+                    <div class="product-image-wrapper">
+                        <a href="/products/view?productId=9">
+                            <img class="product-image"
+                                 src="/images/varmilo.jpg"
+                                 alt="RAF K899"
+                                 loading="lazy">
+                        </a>
+                    </div>
+
+                    <!-- Product Body -->
+                    <div class="product-body">
+                        <!-- Category -->
+                        <div class="product-category"></div>
+
+                        <!-- Product Name -->
+                        <h2 class="product-name">
+                            <a href="/products/view?productId=9">RAF K899</a>
+                        </h2>
+
+                        <!-- Product Footer -->
+                        <div class="product-footer">
+                            <!-- Price -->
+                            <div class="product-price">
+                                <span>300000</span>
+                                <span class="product-price-currency">₸</span>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <a href="/cart/add?productId=9"
+                               class="btn-add-to-cart"
+                               title="Добавить в корзину">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                                </svg>
+                                <span>В корзину</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Empty State -->
+            
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+</body>
+</html>

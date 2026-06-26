@@ -47,7 +47,7 @@ public class ProductController {
     }
 
 
-    @RequestMapping(path = "/main")
+    @RequestMapping(path = "/main") //Пагинация
     public String showProductsUser(Model model) {
 
 
