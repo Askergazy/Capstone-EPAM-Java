@@ -1,45 +1,82 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Search Result</title>
-    <link rel="stylesheet" href="/css/product_result_search.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{search.results.title} + ' - Online Shop'">Результаты поиска - Online Shop</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/products.css">
+    <link rel="stylesheet" href="/css/components.css">
 </head>
 <body>
+    <div th:insert="~{fragments/header_example::headerFragment}"></div>
 
-<div th:insert="fragments/header_example::headerFragment"></div>
+    <main class="products-container">
+        <div class="container">
+            <div class="products-header">
+                <h1 class="products-title" th:text="#{search.results.title}">Результаты поиска</h1>
+                <p class="products-subtitle" th:if="${!products.isEmpty()}">
+                    <span th:text="#{catalog.found}">Найдено товаров</span>: <span th:text="${products.size()}">0</span>
+                </p>
+            </div>
 
-<br>
+            <div th:if="${products.isEmpty()}" class="no-results">
+                <div class="no-results-icon">
+                    <svg width="64" height="64" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <h2 class="no-results-title" th:text="#{search.nothing.found}">Ничего не найдено</h2>
+                <p class="no-results-text" th:text="#{search.try.again}">Попробуйте изменить поисковый запрос</p>
+                <a href="/products/main" class="btn btn-primary" style="margin-top: var(--space-6);" th:text="#{catalog.back}">
+                    Вернуться к каталогу
+                </a>
+            </div>
 
-<div th:if="${products.isEmpty()}">
-    <b>Ничего не найдено</b>
-</div>
+            <div class="product-grid" th:if="${!products.isEmpty()}">
+                <article th:each="product : ${products}" class="product-card">
+                    <div class="product-image-wrapper">
+                        <a th:href="@{/products/view(productId=${product.id})}">
+                            <img class="product-image"
+                                 th:if="${product.image != null}"
+                                 th:src="@{'/images/' + ${product.image}}"
+                                 th:alt="${product.name}"
+                                 loading="lazy">
+                        </a>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-category" th:text="${product.category?.name}">Категория</div>
+                        <h2 class="product-name">
+                            <a th:href="@{/products/view(productId=${product.id})}"
+                               th:text="${product.name}">
+                                Название товара
+                            </a>
+                        </h2>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span th:text="${product.price}">0</span>
+                                <span class="product-price-currency">₸</span>
+                            </div>
 
-<div class="box-product-container">
-<div class="product-container" th:if="${!#authorization.expression('hasRole(''ADMIN'')')}" th:each="product : ${products}">
-    <a class="img" th:href="@{/products/view(productId=${product.getId()})}">
-        <img th:src="@{'/images/' + ${product.image}}" alt="Product Image" width="70" height="70" />
-    </a>
-    <a th:href="@{/products/view(productId=${product.getId()})}" th:text="${product.getName()}"></a>
-    <a th:href="@{/products/view(productId=${product.getId()})}" th:text="${product.getPrice()}"></a>
-    <a th:href="@{/cart/add(productId=${product.getId()})}" class="action-button">Добавить в корзину</a>
-</div>
+                            <a th:href="@{/cart/add(productId=${product.id})}"
+                               class="btn-add-to-cart"
+                               th:title="#{product.add.to.cart}">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                                </svg>
+                                <span th:text="#{catalog.add.to.cart}">В корзину</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
 
-<div class="product-container" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:each="product : ${products}">
-    <a class="img" th:href="@{/products/view(productId=${product.getId()})}">
-        <img th:src="@{'/images/' + ${product.image}}" alt="Product Image" width="70" height="70"/>
-    </a>
-    <a th:href="@{/products/view(productId=${product.getId()})}" th:text="${product.getName()}"></a>
-    <a th:href="@{/cart/add(productId=${product.getId()})}" class="action-button">Добавить в корзину</a>
-    <a th:href="@{/products/update(productId=${product.getId()})}" class="action-button">Обновить</a>
-    <a th:href="@{/products/delete(productId=${product.getId()})}" class="action-button">Удалить</a>
-</div>
-</div>
-
-
-
-
-
+    <script src="/js/main.js"></script>
 </body>
 </html>

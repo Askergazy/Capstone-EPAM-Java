@@ -1,98 +1,111 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Product Page User</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" th:content="#{catalog.title}">
+    <title th:text="#{catalog.title} + ' | Online Shop'">Каталог товаров | Online Shop</title>
 
-    <link rel="stylesheet" href="/css/product_page_user.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/products.css">
+    <link rel="stylesheet" href="/css/components.css">
 </head>
 <body>
-<div th:replace="fragments/header_example::headerFragment"></div>
+    <!-- Header -->
+    <div th:replace="fragments/header_example::headerFragment"></div>
 
-<div class="product-list">
-    <div th:each="product : ${productList}" class="product-item">
+    <!-- Main Content -->
+    <main class="products-container">
+        <div class="container">
+            <!-- Page Header -->
+            <header class="products-header">
+                <h1 class="products-title" th:text="#{catalog.title}">Каталог товаров</h1>
+                <p class="products-subtitle" th:text="#{catalog.subtitle}">Найдите лучшие товары по выгодным ценам</p>
+            </header>
 
-        <a class="img" th:href="@{/products/view(productId=${product.getId()})}">
-            <img th:src="@{'/images/' + ${product.image}}" alt="Product Image" width="60" />
-        </a>
+            <!-- Filters Section -->
+            <div class="filters-container">
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <label for="sort-select" class="form-label" th:text="#{catalog.sort}">Сортировка</label>
+                        <select id="sort-select" class="form-select">
+                            <option value="popular" th:text="#{catalog.sort.popular}">По популярности</option>
+                            <option value="price-asc" th:text="#{catalog.sort.price.asc}">Сначала дешевле</option>
+                            <option value="price-desc" th:text="#{catalog.sort.price.desc}">Сначала дороже</option>
+                            <option value="new" th:text="#{catalog.sort.new}">Новинки</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Products Grid -->
+            <div th:if="${!productList.isEmpty()}" class="product-grid">
+                <article th:each="product : ${productList}" class="product-card animate-on-scroll">
+                    <!-- Product Image -->
+                    <div class="product-image-wrapper">
+                        <a th:href="@{/products/view(productId=${product.id})}">
+                            <img class="product-image"
+                                 th:src="@{'/images/' + ${product.image}}"
+                                 th:alt="${product.name}"
+                                 loading="lazy">
+                        </a>
+                    </div>
 
+                    <!-- Product Body -->
+                    <div class="product-body">
+                        <!-- Category -->
+                        <div class="product-category" th:text="${product.category?.name}">Категория</div>
 
-        <div class="product-details">
-            <a th:href="@{/products/view(productId=${product.getId()})}" th:text="${product.getName()}"></a>
-            <a th:href="@{/products/view(productId=${product.getId()})}" th:text="${product.getPrice() + ' ' +  'T'}"></a>
+                        <!-- Product Name -->
+                        <h2 class="product-name">
+                            <a th:href="@{/products/view(productId=${product.id})}"
+                               th:text="${product.name}">
+                                Название товара
+                            </a>
+                        </h2>
 
-            <a th:href="@{/cart/add(productId=${product.getId()})}" class="add-to-cart-button">В корзину</a>
+                        <!-- Product Footer -->
+                        <div class="product-footer">
+                            <!-- Price -->
+                            <div class="product-price">
+                                <span th:text="${product.price}">25000</span>
+                                <span class="product-price-currency">₸</span>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <a th:href="@{/cart/add(productId=${product.id})}"
+                               class="btn-add-to-cart"
+                               th:title="#{product.add.to.cart}">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                                </svg>
+                                <span th:text="#{catalog.add.to.cart}">В корзину</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${productList.isEmpty()}" class="empty-state">
+                <div class="empty-state-icon">📦</div>
+                <h2 class="empty-state-title" th:text="#{catalog.empty.title}">Товары не найдены</h2>
+                <p class="empty-state-text" th:text="#{catalog.empty.text}">
+                    К сожалению, в данный момент нет доступных товаров.
+                </p>
+                <a href="/products/main" class="btn btn-primary" th:text="#{catalog.back}">
+                    Вернуться к каталогу
+                </a>
+            </div>
         </div>
-    </div>
-</div>
+    </main>
 
-
-
-
-
-
-
-
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

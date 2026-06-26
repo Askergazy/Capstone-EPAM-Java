@@ -1,62 +1,43 @@
 package kz.askar.shop.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "options")
 public class Characteristic {
 
-    @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
-
     private String name;
 
-
-    @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "category_id")
     private Category category;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "characteristic")
-    private List<CharacteristicValue> characteristicValueList;
-
-
-
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Characteristic that = (Characteristic) o;
-        return id == that.id && Objects.equals(name, that.name) && Objects.equals(category, that.category);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, category);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" +
-               "id = " + id + ", " +
-               "name = " + name + ", " +
-               "category = " + category + ")";
+        return "Characteristic{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               '}';
     }
 }

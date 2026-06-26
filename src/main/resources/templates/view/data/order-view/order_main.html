@@ -1,65 +1,76 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
 <head>
-    <title>Order Page</title>
-    <link rel="stylesheet" href="/css/order_main.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{cart.checkout} + ' - Online Shop'">Оформление заказа - Online Shop</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/components.css">
 </head>
 <body>
+    <div th:insert="~{fragments/header_example::headerFragment}"></div>
 
-<div class="order-container">
-    <h1>Оформление заказа</h1>
+    <main class="order-container">
+        <div class="order-header">
+            <h1 class="order-title" th:text="#{cart.checkout}">Оформление заказа</h1>
+        </div>
 
-    <div class="order-details">
-        <h2>Товары</h2>
-        <ul class="cart-items">
-            <li th:each="cartItem : ${cartItemList}" class="cart-item">
-                <p>
-                    <span class="item-label">Товар:</span>
-                    <span class="item-value" th:text="${cartItem.product.name}"></span>
-                </p>
-                <p>
-                    <span class="item-label">Количество:</span>
-                    <span class="item-value" th:text="${cartItem.quantity}"></span>
-                </p>
-                <p>
-                    <span class="item-label">Цена:</span>
-                    <span class="item-value" th:text="${cartItem.getQuantity() * cartItem.getProduct().getPrice()}"></span>
-                </p>
-            </li>
-        </ul>
-        <p class="total-amount">Общая сумма: <b th:text="${sum}"></b></p>
-    </div>
+        <div class="order-card">
+            <h2 class="order-card-title" th:text="#{order.products}">Товары в заказе</h2>
 
-    <div class="customer-details">
-        <h2>Данные</h2>
-        <form method="post" th:action="@{/order}" class="order-form">
-            <label for="address">Адрес:</label>
-            <input type="text" id="address" name="address" required><br>
+            <div th:each="cartItem : ${cartItemList}" class="order-item">
+                <div class="order-item-details">
+                    <span class="order-item-name" th:text="${cartItem.product.name}">Товар</span>
+                    <span style="color: var(--gray-500); font-size: var(--text-sm);">
+                        × <span th:text="${cartItem.quantity}">1</span>
+                    </span>
+                </div>
+                <span class="order-item-value" th:text="${cartItem.quantity * cartItem.product.price} + ' ₸'">0 ₸</span>
+            </div>
 
-            <button type="submit" class="submit-button">Оформить заказ</button>
-        </form>
-    </div>
-</div>
+            <div class="order-total">
+                <span class="order-total-label" th:text="#{cart.total} + ':'">Итого:</span>
+                <span class="order-total-value" th:text="${sum} + ' ₸'">0 ₸</span>
+            </div>
+        </div>
 
-<!--<h1>Оформление заказа</h1>-->
+        <div class="order-card">
+            <h2 class="order-card-title" th:text="#{order.address}">Данные доставки</h2>
 
-<!--<h2>Товары</h2>-->
-<!--<ul>-->
-<!--    <li th:each="cartItem : ${cartItemList}">-->
-<!--        Товар: <span th:text="${cartItem.product.name}"></span><br>-->
-<!--        Количество: <span th:text="${cartItem.quantity}"></span><br>-->
-<!--        Цена: <span th:text="${cartItem.getQuantity() * cartItem.getProduct().getPrice()}"></span>-->
-<!--    </li>-->
-<!--</ul>-->
-<!--<p> Общая сумма :<b th:text="${sum}"></b></p>-->
-<!--<h2>Данные</h2>-->
-<!--<form method="post" th:action="@{/order}">-->
+            <form method="post" th:action="@{/order}" style="display: flex; flex-direction: column; gap: var(--space-5);">
+                <div class="form-group">
+                    <label for="address" class="form-label" th:text="#{order.address}">Адрес доставки</label>
+                    <input type="text"
+                           id="address"
+                           name="address"
+                           class="form-input"
+                           th:placeholder="#{order.address.placeholder}"
+                           required>
+                </div>
 
-<!--    <label for="address">Адрес:</label>-->
-<!--    <input type="text" id="address" name="address"><br>-->
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="margin-right: var(--space-2);">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span th:text="#{order.create}">Оформить заказ</span>
+                </button>
+            </form>
+        </div>
 
-<!--    <button type="submit">Оформить заказ</button>-->
-<!--</form>-->
+        <div style="text-align: center; margin-top: var(--space-4);">
+            <a href="/cart" class="btn btn-secondary">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="margin-right: var(--space-2);">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                </svg>
+                <span th:text="#{common.back} + ' ' + #{menu.cart}">Вернуться в корзину</span>
+            </a>
+        </div>
+    </main>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

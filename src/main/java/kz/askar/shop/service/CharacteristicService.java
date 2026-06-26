@@ -1,25 +1,28 @@
 package kz.askar.shop.service;
 
 
+import kz.askar.shop.dao.CharacteristicDao;
 import kz.askar.shop.entity.Category;
 import kz.askar.shop.entity.Characteristic;
-import kz.askar.shop.repository.CharacteristicRepository;
-import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CharacteristicService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CharacteristicService.class);
+    private final CharacteristicDao characteristicDao;
 
-    private final CharacteristicRepository characteristicRepository;
+    public CharacteristicService(CharacteristicDao characteristicDao) {
+        this.characteristicDao = characteristicDao;
+    }
 
-
-  public List<Characteristic>findCharacteristicsByCategory(Category category){
-      return  characteristicRepository.findCharacteristicByCategory(category);
-  }
-
+    public List<Characteristic> findCharacteristicsByCategory(Category category) {
+        logger.debug("Finding characteristics by category: {}", category.getName());
+        return characteristicDao.findCharacteristicByCategory(category);
+    }
 
 }

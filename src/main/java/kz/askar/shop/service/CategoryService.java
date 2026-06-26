@@ -1,24 +1,31 @@
 package kz.askar.shop.service;
 
+import kz.askar.shop.dao.CategoryDao;
 import kz.askar.shop.entity.Category;
-import kz.askar.shop.repository.CategoryRepository;
-import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class CategoryService {
 
-    private final CategoryRepository categoryRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
+    private final CategoryDao categoryDao;
+
+    public CategoryService(CategoryDao categoryDao) {
+        this.categoryDao = categoryDao;
+    }
 
     public List<Category> findAll() {
-        return categoryRepository.findAll();
+        logger.debug("Finding all categories");
+        return categoryDao.findAll();
     }
 
     public Optional<Category> findById(Long id) {
-        return categoryRepository.findById(id);
+        logger.debug("Finding category by id: {}", id);
+        return categoryDao.findById(id);
     }
 }

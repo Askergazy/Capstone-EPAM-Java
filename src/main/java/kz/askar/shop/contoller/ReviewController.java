@@ -69,13 +69,7 @@ public class ReviewController {
 
     @RequestMapping("/approve")
     public String approveReview(@RequestParam("reviewId") Long reviewId) {
-
-        Review review = reviewService.findById(reviewId).orElseThrow();
-
-        review.setStatus(true);
-
-        reviewService.save(review);
-
+        reviewService.approveReview(reviewId);
         return "redirect:/review/moderate";
     }
 

@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -43,22 +41,9 @@ public class CartController {
         }
 
         List<CartItem> list = cartItemService.getCartItemsByUser(user);
+        int sum = cartItemService.calculateTotalSum(list);
 
-
-        Collections.sort(list,new Comparator<CartItem>(){
-
-            @Override
-            public int compare(CartItem o1, CartItem o2) {
-                return (int) (o1.getId() - o2.getId());
-            }
-        });
-        int sum = 0;
-
-        for (CartItem cartItem : list){
-            sum+= cartItem.getProduct().getPrice() * cartItem.getQuantity();
-        }
-
-        model.addAttribute("sum",sum);
+        model.addAttribute("sum", sum);
 
 
 
@@ -79,7 +64,7 @@ public class CartController {
 
         cartItemService.cartAdd(userId,productId);
 
-        return "redirect:/products/main ";
+        return "redirect:/products/main";
     }
 
 
@@ -111,22 +96,14 @@ public class CartController {
 
 
    @RequestMapping(path = "/increaseQuantity")
-    public String increase(
-            @RequestParam("product")Long cartItemId){
-
-       Long userId = userService.getCurrentUser().getId();
-
+    public String increase(@RequestParam("product") Long cartItemId) {
         cartItemService.increaseQuantity(cartItemId);
-
         return "redirect:/cart";
    }
 
     @RequestMapping(path = "/decreaseQuantity")
-    public String decrease(@RequestParam("product")Long cartItemId){
-
-        Long userId = userService.getCurrentUser().getId();
+    public String decrease(@RequestParam("product") Long cartItemId) {
         cartItemService.decreaseQuantity(cartItemId);
-
         return "redirect:/cart";
     }
 

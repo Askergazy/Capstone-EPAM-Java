@@ -1,11 +1,13 @@
 package kz.askar.shop.service;
 
+import kz.askar.shop.dao.CartItemDao;
+import kz.askar.shop.dao.ProductDao;
+import kz.askar.shop.dao.UserDao;
 import kz.askar.shop.entity.CartItem;
 import kz.askar.shop.entity.Product;
 import kz.askar.shop.entity.User;
-import kz.askar.shop.repository.CartItemRepository;
-import kz.askar.shop.repository.ProductRepository;
-import kz.askar.shop.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,105 +16,89 @@ import java.util.List;
 @Service
 public class CartItemService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CartItemService.class);
+    private final CartItemDao cartItemDao;
+    private final UserDao userDao;
+    private final ProductDao productDao;
 
-    private final CartItemRepository cartItemRepository;
-    private  final UserRepository userRepository;
-    private final ProductRepository productRepository;
-
-    public CartItemService(CartItemRepository cartItemRepository, UserRepository userRepository,  ProductRepository productRepository) {
-        this.cartItemRepository = cartItemRepository;
-
-        this.userRepository = userRepository;
-        this.productRepository = productRepository;
+    public CartItemService(CartItemDao cartItemDao, UserDao userDao, ProductDao productDao) {
+        this.cartItemDao = cartItemDao;
+        this.userDao = userDao;
+        this.productDao = productDao;
     }
 
 
-    public List<CartItem> getCartItemsByUser(User user){
-        return cartItemRepository.findByUser(user);
+    public List<CartItem> getCartItemsByUser(User user) {
+        logger.debug("Getting cart items for user: {}", user.getLogin());
+        List<CartItem> items = cartItemDao.findByUser(user);
+        items.sort((o1, o2) -> (int) (o1.getId() - o2.getId()));
+        return items;
     }
 
+    public int calculateTotalSum(List<CartItem> cartItems) {
+        int sum = 0;
+        for (CartItem cartItem : cartItems) {
+            sum += cartItem.getProduct().getPrice() * cartItem.getQuantity();
+        }
+        return sum;
+    }
 
-    public void cartAdd(Long userId,Long productId){
+    public void cartAdd(Long userId, Long productId) {
+        logger.info("Adding product {} to cart for user {}", productId, userId);
+        User user = userDao.findById(userId).orElseThrow();
+        Product product = productDao.findById(productId).orElseThrow();
 
-        User user = userRepository.findById(userId).orElseThrow();
+        boolean itemExists = false;
+        List<CartItem> userCartItems = cartItemDao.findByUser(user);
 
-        Product product = productRepository.findById(productId).orElseThrow();
-
-
-
-        Boolean check = true;
-
-        for (int i = 0; i < cartItemRepository.findByUser(user).size(); i++) {
-             if (cartItemRepository.findByUser(user).get(i).getProduct().equals(product)){
-                 check = false;
-                 cartItemRepository.findByUser(user).get(i).setQuantity(cartItemRepository.findByUser(user).get(i).getQuantity() + 1);
-                 cartItemRepository.save(cartItemRepository.findByUser(user).get(i));
-             }
+        for (CartItem item : userCartItems) {
+            if (item.getProduct().getId().equals(productId)) {
+                itemExists = true;
+                item.setQuantity(item.getQuantity() + 1);
+                cartItemDao.save(item);
+                break;
+            }
         }
 
-        if (check){
+        if (!itemExists) {
             CartItem cartItem = new CartItem();
-
             cartItem.setUser(user);
             cartItem.setProduct(product);
             cartItem.setQuantity(1);
-
-            cartItemRepository.save(cartItem);
+            cartItemDao.save(cartItem);
         }
-
-
     }
 
-
-    public void deleteCartItem(Long cartItemId){
-
-        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow();
-
-        cartItemRepository.delete(cartItem);
+    public void deleteCartItem(Long cartItemId) {
+        logger.info("Deleting cart item: {}", cartItemId);
+        CartItem cartItem = cartItemDao.findById(cartItemId).orElseThrow();
+        cartItemDao.deleteById(cartItem.getId());
     }
 
-
-    public void deleteAllCartItems(User user){
-
-
-        List<CartItem> cartItems = cartItemRepository.findByUser(user);
-
-        cartItemRepository.deleteAll(cartItems);
-
+    public void deleteAllCartItems(User user) {
+        logger.info("Deleting all cart items for user: {}", user.getLogin());
+        List<CartItem> cartItems = cartItemDao.findByUser(user);
+        cartItemDao.deleteAll(cartItems);
     }
 
-    public void increaseQuantity(Long cartItemId){
-
-        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow();
-
+    public void increaseQuantity(Long cartItemId) {
+        logger.debug("Increasing quantity for cart item: {}", cartItemId);
+        CartItem cartItem = cartItemDao.findById(cartItemId).orElseThrow();
         Integer quantity = cartItem.getQuantity() + 1;
-
         cartItem.setQuantity(quantity);
-
-        cartItemRepository.save(cartItem);
-
+        cartItemDao.save(cartItem);
     }
 
-
-    public void decreaseQuantity(Long cartItemId){
-
-        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow();
-
-        Integer quantity = cartItem.getQuantity() -1;
-
+    public void decreaseQuantity(Long cartItemId) {
+        logger.debug("Decreasing quantity for cart item: {}", cartItemId);
+        CartItem cartItem = cartItemDao.findById(cartItemId).orElseThrow();
+        Integer quantity = cartItem.getQuantity() - 1;
         cartItem.setQuantity(quantity);
 
-        cartItemRepository.save(cartItem);
-
-        if (cartItem.getQuantity() < 1){
-
-
-          cartItemRepository.delete(cartItem);
+        if (quantity < 1) {
+            cartItemDao.deleteById(cartItem.getId());
+        } else {
+            cartItemDao.save(cartItem);
         }
-
-
-
-
-
     }
 }

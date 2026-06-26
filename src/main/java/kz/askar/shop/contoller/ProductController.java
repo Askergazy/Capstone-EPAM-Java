@@ -25,6 +25,7 @@ public class ProductController {
     private final UserService userService;
     private final ReviewService reviewService;
     private final CharacteristicService characteristicService;
+    private final CharacteristicValueService characteristicValueService;
     private final static String UPLOAD_DIR = "C:\\Users\\askar\\OneDrive\\Desktop\\images";
 
 
@@ -203,8 +204,11 @@ public class ProductController {
             }
         }
 
-
-        product.setCharacteristicValues(characteristicValues);
+        // Save product first, then save characteristic values
+        productService.save(product);
+        for (CharacteristicValue cv : characteristicValues) {
+            characteristicValueService.save(cv);
+        }
 
         try {
             InputStream inputStream = file.getInputStream();
@@ -243,6 +247,13 @@ public class ProductController {
 
         Product product = productService.findById(productId).orElseThrow();
 
+        // Load characteristic values for the product
+        List<CharacteristicValue> characteristicValues = characteristicValueService.findByProduct(product);
+        product.setCharacteristicValues(characteristicValues);
+
+        // Load reviews for the product
+        List<Review> reviews = reviewService.findByProduct(product);
+        product.setReviews(reviews);
 
         User user = userService.getCurrentUser();
         model.addAttribute("user", user);
@@ -250,33 +261,11 @@ public class ProductController {
 
         model.addAttribute("product", product);
 
-        int sum = 0;
-        float avg = 0;
-        int uploadedReviews = 0;
+        float avg = reviewService.calculateAverageRating(reviews);
+        int approvedReviews = reviewService.countApprovedReviews(reviews);
+        boolean reviewIsEmpty = (approvedReviews == 0);
 
-
-        for (Review review : product.getReviews()) {
-            if (review.isStatus()) {
-                sum += review.getRating();
-                uploadedReviews++;
-            }
-        }
-
-
-        if (uploadedReviews != 0) {
-            for (Review review : product.getReviews()) {
-                if (review.isStatus()) {
-                    sum += review.getRating();
-                    uploadedReviews++;
-                }
-            }
-            avg = (float) sum / uploadedReviews;
-        } else {
-            avg = 0;
-            boolean reviewsIsEmpty = true;
-            model.addAttribute("reviewIsEmpty", reviewsIsEmpty);
-        }
-
+        model.addAttribute("reviewIsEmpty", reviewIsEmpty);
         model.addAttribute("avg", avg);
 
 
@@ -305,16 +294,19 @@ public class ProductController {
     public String updateProduct(Model model,
                                 @RequestParam(name = "productId") Long productId) {
 
-
         Product product = productService.findById(productId).orElseThrow();
-        model.addAttribute("product", product);
 
+        // Load characteristic values for the product
+        List<CharacteristicValue> characteristicValues = characteristicValueService.findByProduct(product);
+        product.setCharacteristicValues(characteristicValues);
+
+        model.addAttribute("product", product);
 
         return "view/data/product-view/product_update_page";
     }
 
 
-        @PutMapping(path = "/update")
+        @PostMapping(path = "/update")
         public String updateProduct(Model model,
                                     @RequestParam(name = "productId") Long productId,
                                     @RequestParam(name = "name") String name,
@@ -328,13 +320,12 @@ public class ProductController {
             product.setName(name);
             product.setPrice(price);
 
-            List<CharacteristicValue> characteristicValues = product.getCharacteristicValues();
+            List<CharacteristicValue> characteristicValues = characteristicValueService.findByProduct(product);
 
             for (int i = 0; i < characteristicValues.size(); i++) {
                 characteristicValues.get(i).setValue(values.get(i));
+                characteristicValueService.save(characteristicValues.get(i));
             }
-
-            product.setCharacteristicValues(characteristicValues);
 
             productService.save(product);
 

@@ -36,12 +36,7 @@ public class OrderController {
 
         model.addAttribute("cartItemList", cartItemList);
 
-        int sum = 0;
-
-        for (CartItem cartItem : cartItemList) {
-            sum += cartItem.getProduct().getPrice() * cartItem.getQuantity();
-        } //убрать в сервис
-
+        int sum = cartItemService.calculateTotalSum(cartItemList);
         model.addAttribute("sum", sum);
 
 
@@ -71,12 +66,10 @@ public class OrderController {
                             Model model) {
         Order order = orderService.findById(orderId).orElseThrow();
 
+        List<OrderedProduct> orderedProducts = orderedProductService.findByOrder(order);
+        order.setOrderedProducts(orderedProducts);
 
-        int sum = 0;
-
-        for (OrderedProduct orderedProduct : order.getOrderedProducts()) {
-            sum += orderedProduct.getProduct().getPrice() * orderedProduct.getCount();
-        } // Убрать в сервис
+        int sum = orderedProductService.calculateTotalSum(orderedProducts);
 
         model.addAttribute("order", order);
         model.addAttribute("sum", sum);

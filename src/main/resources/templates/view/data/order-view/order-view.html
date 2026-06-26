@@ -1,50 +1,111 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Order View</title>
-    <link  rel="stylesheet"  href="/css/order_view.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Заказ №' + ${order.id} + ' - Online Shop'">Заказ - Online Shop</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/components.css">
 </head>
 <body>
+    <div th:insert="~{fragments/header_example::headerFragment}"></div>
 
-<div th:insert="fragments/header_example::headerFragment"></div>
-
-<div class="order-details-container">
-    <h2>Информация о Заказе</h2>
-
-    <th:block>
-
-        <p> Имя:<b th:text="${order.getUser().getName()}"></b></p>
-        <p> Фамилия:<b th:text="${order.getUser().getLastName()}"></b></p>
-        <p> Адрес : <b th:text="${order.getAddress()}"></b></p>
-        <p> Дата заказа:<b th:text="${order.getOrderDate()}"></b></p>
-        <div th:each="orderItem : ${order.getOrderedProducts()}" class="ordered-item">
-            <p> Название товара :<b th:text="${orderItem.getProduct().getName()}"> </b></p>
-            <p> Количество товара : <b th:text="${orderItem.getCount()}"></b></p>
-            <p> Цена : <b th:text="${orderItem.getProduct().getPrice() * orderItem.getCount()}"></b></p>
+    <main class="order-container">
+        <div class="order-header">
+            <h1 class="order-title" th:text="'Заказ №' + ${order.id}">Заказ №1</h1>
         </div>
 
-        <p> Общая сумма : <b th:text="${sum}"></b></p>
-    </th:block>
+        <div class="order-card">
+            <h2 class="order-card-title" th:text="#{order.info}">Информация о заказе</h2>
 
-    <form th:action="@{/order/view}" th:object="${order}" method="post" class="order-form">
-        <input type="hidden" name="orderId" th:value="${order.id}">
-
-        <div th:if="${user.role.equals(user.role.ADMIN)}" class="admin-section">
-            <select class="option" name="status">
-                <option th:text="${order.status}"></option>
-                <option th:if="${status != order.status}" th:each="status : ${statuses}" th:value="${status}" th:text="${status.name()}"></option>
-            </select>
-            <button type="submit">Изменить статус</button>
+            <div class="order-item">
+                <span class="order-item-name" th:text="#{user.name}">Имя</span>
+                <span class="order-item-value" th:text="${order.user.name}">Имя</span>
+            </div>
+            <div class="order-item">
+                <span class="order-item-name" th:text="#{user.last.name}">Фамилия</span>
+                <span class="order-item-value" th:text="${order.user.lastName}">Фамилия</span>
+            </div>
+            <div class="order-item">
+                <span class="order-item-name" th:text="#{order.address}">Адрес доставки</span>
+                <span class="order-item-value" th:text="${order.address}">Адрес</span>
+            </div>
+            <div class="order-item">
+                <span class="order-item-name" th:text="#{order.date}">Дата заказа</span>
+                <span class="order-item-value" th:text="${order.orderDate}">Дата</span>
+            </div>
         </div>
 
-        <div th:if="${user.role.equals(user.role.USER)}" class="user-section">
-            <p> Статус:<b th:text="${order.status}"></b></p>
+        <div class="order-card">
+            <h2 class="order-card-title" th:text="#{order.products}">Товары</h2>
+
+            <div th:each="orderItem : ${order.orderedProducts}" class="order-item">
+                <div>
+                    <span class="order-item-name" th:text="${orderItem.product.name}">Товар</span>
+                    <span style="color: var(--gray-500); font-size: var(--text-sm);">
+                        × <span th:text="${orderItem.count}">1</span>
+                    </span>
+                </div>
+                <span class="order-item-value" th:text="${orderItem.product.price * orderItem.count} + ' ₸'">0 ₸</span>
+            </div>
+
+            <div class="order-total">
+                <span class="order-total-label" th:text="#{cart.total} + ':'">Итого:</span>
+                <span class="order-total-value" th:text="${sum} + ' ₸'">0 ₸</span>
+            </div>
         </div>
-    </form>
-</div>
 
+        <div class="order-card">
+            <h2 class="order-card-title" th:text="#{order.status}">Статус заказа</h2>
 
+            <form th:action="@{/order/view}" th:object="${order}" method="post">
+                <input type="hidden" name="orderId" th:value="${order.id}">
 
+                <!-- Admin view -->
+                <div th:if="${user != null and user.role != null and user.role.name() == 'ADMIN'}" style="display: flex; flex-direction: column; gap: var(--space-4);">
+                    <div class="form-group">
+                        <label for="status" class="form-label" th:text="#{order.change.status}">Изменить статус</label>
+                        <select id="status" name="status" class="form-select">
+                            <option th:value="${order.status}" th:text="${order.status}" selected></option>
+                            <option th:if="${status != order.status}"
+                                    th:each="status : ${statuses}"
+                                    th:value="${status}"
+                                    th:text="${status.name()}">
+                            </option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="margin-right: var(--space-2);">
+                            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                        </svg>
+                        <span th:text="#{order.change.status}">Обновить статус</span>
+                    </button>
+                </div>
+
+                <!-- User view -->
+                <div th:if="${user == null or (user.role != null and user.role.name() == 'USER')}">
+                    <div class="order-item">
+                        <span class="order-item-name" th:text="#{order.status}">Текущий статус</span>
+                        <span class="status-badge status-pending" th:text="${order.status}">Статус</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-4);">
+            <a href="/profile" class="btn btn-secondary">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="margin-right: var(--space-2);">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                </svg>
+                <span th:text="#{common.back} + ' ' + #{menu.profile}">Вернуться в профиль</span>
+            </a>
+        </div>
+    </main>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

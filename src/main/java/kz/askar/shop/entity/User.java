@@ -1,87 +1,61 @@
 package kz.askar.shop.entity;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-
-    @Enumerated(EnumType.ORDINAL)
+    private Long id;
     private Role role;
 
-    @NotEmpty(message = "Логин не должен быть пустым")
-    @Size(min = 2,max = 100,message = "Логин должен быть от 2 до 100 символов длниной")
-    String login;
+    @NotEmpty(message = "Login must not be empty")
+    @Size(min = 2, max = 100, message = "Login must be between 2 and 100 characters")
+    private String login;
 
-    @NotEmpty(message = "Пароль не должен быть пустым")
-    String password;
+    @NotEmpty(message = "Password must not be empty")
+    private String password;
 
-    @NotEmpty
-    String name;
+    @NotEmpty(message = "Name must not be empty")
+    private String name;
 
-    @NotEmpty
-    @Column(name = "last_name")
-    String lastName;
+    @NotEmpty(message = "Last name must not be empty")
+    private String lastName;
 
-    @Column(name = "registration_data")
-    Timestamp registrationDate;
-
-    @OneToMany(mappedBy = "user")
-
-    private List<Review> reviews;
-
-
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-
-    private List<Order> orders = new ArrayList<>();
-
+    private Timestamp registrationDate;
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return getId() != null && Objects.equals(getId(), user.getId());
+        return Objects.equals(id, user.id);
     }
 
     @Override
-    public final int hashCode() {
-        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
-                "role = " + role + ", " +
-                "login = " + login + ", " +
-                "password = " + password + ", " +
-                "name = " + name + ", " +
-                "lastName = " + lastName + ", " +
-                "registrationDate = " + registrationDate + ")";
+        return "User{" +
+                "id=" + id +
+                ", role=" + role +
+                ", login='" + login + '\'' +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", registrationDate=" + registrationDate +
+                '}';
     }
 }

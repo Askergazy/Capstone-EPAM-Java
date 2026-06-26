@@ -1,27 +1,61 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-
-
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Order Moderate</title>
-    <link rel="stylesheet" href=/css/order_moderator_page.css>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модерация заказов - Online Shop</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/components.css">
 </head>
-
 <body>
+    <div th:insert="~{fragments/header_example::headerFragment}"></div>
 
-<div th:insert="fragments/header_example::headerFragment"></div>
+    <main class="admin-container">
+        <div class="admin-header">
+            <h1 class="admin-title">Модерация заказов</h1>
+            <p class="admin-subtitle">Управление и обработка заказов</p>
+        </div>
 
- <h3>Модерация заказов</h3>
+        <div style="margin-bottom: var(--space-4);">
+            <a href="/products/admin" class="btn btn-secondary">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="margin-right: var(--space-2);">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                </svg>
+                Назад к панели
+            </a>
+        </div>
 
- <th:block>
+        <div class="admin-product-list">
+            <a th:each="order : ${orders}"
+               th:href="@{/order/view(orderId=${order.id})}"
+               class="admin-card">
+                <div class="admin-card-icon">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"/>
+                    </svg>
+                </div>
+                <span class="admin-card-text" th:text="'Заказ №' + ${order.id}">Заказ №1</span>
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="margin-left: auto; color: var(--gray-400);">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+            </a>
+        </div>
 
-     <div th:each="order : ${orders}" class="order-item">
-         <a th:href="@{/order/view(orderId=${order.getId()})}" th:text="'Номер заказа №' + ${order.getId()}"></a>
-     </div>
+        <div th:if="${#lists.isEmpty(orders)}" class="empty-state">
+            <div class="empty-state-icon">
+                <svg width="64" height="64" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/>
+                </svg>
+            </div>
+            <h2 class="empty-state-title">Нет заказов</h2>
+            <p class="empty-state-text">Заказы пока не поступали</p>
+        </div>
+    </main>
 
-
- </th:block>
+    <script src="/js/main.js"></script>
 </body>
 </html>

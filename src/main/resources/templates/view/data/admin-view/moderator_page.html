@@ -1,45 +1,77 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Moderator Page</title>
-    <link rel="stylesheet" href="/css/moderator_page.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модерация отзывов - Online Shop</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/components.css">
 </head>
 <body>
-<div th:insert="fragments/header_example::headerFragment"></div>
+    <div th:insert="~{fragments/header_example::headerFragment}"></div>
 
+    <main class="admin-container">
+        <div class="admin-header">
+            <h1 class="admin-title">Модерация отзывов</h1>
+            <p class="admin-subtitle">Проверяйте и одобряйте отзывы пользователей</p>
+        </div>
 
-<th:block th:each="review : ${reviewList}">
-    <div class="review-item" th:if="${!review.status}">
-        <p class="product-name" th:text="${review.getProduct().getName()}"></p>
-        <p class="rating" th:text="${review.getRating()}"></p>
-        <p class="review-text" th:text="${review.getReviewText()}"></p>
-        <p class="review-date" th:text="${review.getReviewDate()}"></p>
+        <div style="margin-bottom: var(--space-4);">
+            <a href="/products/admin" class="btn btn-secondary">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="margin-right: var(--space-2);">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                </svg>
+                Назад к панели
+            </a>
+        </div>
 
-        <a class="delete-button" th:href="@{/review/delete(reviewId=${review.getId()})}">Удалить</a>
-        <a class="approve-button" th:href="@{/review/approve(reviewId=${review.getId()})}">Одобрить</a>
-        <br>
-    </div>
-</th:block>
+        <th:block th:each="review : ${reviewList}">
+            <div th:if="${!review.status}" class="review-moderation-item">
+                <div class="review-moderation-header">
+                    <span class="review-moderation-product" th:text="${review.product.name}">Название товара</span>
+                    <div class="review-moderation-rating">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        <span th:text="${review.rating}">5</span>
+                    </div>
+                </div>
 
+                <p class="review-moderation-text" th:text="${review.reviewText}">Текст отзыва</p>
+                <p class="review-moderation-date" th:text="${review.reviewDate}">Дата</p>
 
-<!--<th:block >-->
+                <div class="review-moderation-actions">
+                    <a th:href="@{/review/approve(reviewId=${review.id})}" class="btn btn-success">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="margin-right: var(--space-2);">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Одобрить
+                    </a>
+                    <a th:href="@{/review/delete(reviewId=${review.id})}" class="btn btn-danger">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="margin-right: var(--space-2);">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        Удалить
+                    </a>
+                </div>
+            </div>
+        </th:block>
 
-<!--    <div th:each="review : ${reviewList}" >-->
-<!--         <div th:if="${!review.status}">-->
-<!--             <p  th:text="${review.getProduct().getName()}"></p>-->
-<!--             <p  th:text="${review.getRating()}"></p>-->
-<!--             <p th:text="${review.getReviewText()}"></p>-->
-<!--             <p th:text="${review.getReviewDate()}"></p>-->
+        <div th:if="${#lists.isEmpty(reviewList)}" class="empty-state">
+            <div class="empty-state-icon">
+                <svg width="64" height="64" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <h2 class="empty-state-title">Нет отзывов для модерации</h2>
+            <p class="empty-state-text">Все отзывы проверены</p>
+        </div>
+    </main>
 
-<!--             <a th:href="@{/review/delete(reviewId=${review.getId()})}"><input type="submit"value="Удалить"></a>-->
-<!--             <a th:href="@{/review/approve(reviewId=${review.getId()})}"><input type="submit"value="Одобрить"></a>-->
-<!--             <br>-->
-<!--         </div>-->
-<!--    </div>-->
-
-<!--</th:block>-->
-
+    <script src="/js/main.js"></script>
 </body>
 </html>

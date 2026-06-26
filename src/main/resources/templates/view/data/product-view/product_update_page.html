@@ -1,76 +1,82 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/css/product_update_page.css">
-    <title>Update Product</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать товар - Online Shop</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/components.css">
 </head>
-<div th:insert="fragments/header_example::headerFragment"></div>
-
 <body>
+    <div th:insert="~{fragments/header_example::headerFragment}"></div>
 
+    <main class="form-page-container" style="max-width: 700px;">
+        <div class="form-page-card">
+            <h1 class="form-page-title">Редактировать товар</h1>
 
-<form th:action="@{/products/update}" th:object="${product}" method="post" class="update-product-form">
-    <h1>Обновить товар</h1>
+            <form th:action="@{/products/update}"
+                  th:object="${product}"
+                  method="post"
+                  style="display: flex; flex-direction: column; gap: var(--space-5);">
 
-    <img th:src="@{'/images/' + ${product.image}}" alt="Product Image" width="150"/>
+                <input type="hidden" name="productId" th:value="${product.id}">
 
-    <input type="hidden" name="productId" th:value="${product.id}">
-    <label class="form-label">
-        Product Name:
-        <input type="text" th:field="*{name}" class="form-input" required>
-    </label><br>
+                <!-- Product Image Preview -->
+                <div th:if="${product.image != null}" style="text-align: center; margin-bottom: var(--space-4);">
+                    <img th:src="@{'/images/' + ${product.image}}"
+                         alt="Product Image"
+                         style="max-width: 200px; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);">
+                </div>
 
-    <label class="form-label">
-        Product Price:
-        <input type="number" th:field="*{price}" class="form-input" required>
-    </label><br>
+                <div class="form-group">
+                    <label for="name" class="form-label">Название товара</label>
+                    <input type="text"
+                           id="name"
+                           th:field="*{name}"
+                           class="form-input"
+                           required>
+                </div>
 
-    <br>
-    <th:block th:if="${!product.getCharacteristicValues().isEmpty()}">
-        <p class="form-label">Характеристики:</p>
-        <div th:each="value : ${product.getCharacteristicValues()}" class="characteristics-container">
-            <b class="form-label" th:text="${value.getCharacteristic().getName()}"></b>
-            <input type="text" name="values" th:value="${value.getValue()}" class="form-input" /><br />
+                <div class="form-group">
+                    <label for="price" class="form-label">Цена (₸)</label>
+                    <input type="number"
+                           id="price"
+                           th:field="*{price}"
+                           class="form-input"
+                           min="0"
+                           required>
+                </div>
+
+                <th:block th:if="${!product.characteristicValues.isEmpty()}">
+                    <div style="padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-lg);">
+                        <p class="form-label" style="margin-bottom: var(--space-4);">Характеристики</p>
+                        <div th:each="value : ${product.characteristicValues}" class="form-group" style="margin-bottom: var(--space-3);">
+                            <label class="form-label" th:text="${value.characteristic.name}">Характеристика</label>
+                            <input type="text"
+                                   name="values"
+                                   th:value="${value.value}"
+                                   class="form-input">
+                        </div>
+                    </div>
+                </th:block>
+
+                <div style="display: flex; gap: var(--space-3); justify-content: flex-end;">
+                    <a href="/products/admin" class="btn btn-secondary">Отмена</a>
+                    <button type="submit" class="btn btn-primary">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="margin-right: var(--space-2);">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Сохранить изменения
+                    </button>
+                </div>
+            </form>
         </div>
-    </th:block>
+    </main>
 
-    <button type="submit" class="form-button">Update</button>
-</form>
-
-<!--<form th:action="@{/products/update}" th:object="${product}" method="post">-->
-<!--    <h1>Обновить товар</h1>-->
-
-
-<!--    <img th:src="@{'/images/' + ${product.image}}" alt="Product Image" width="50"/>-->
-
-<!--    <input type="hidden" name="productId" th:value="${product.id}">-->
-<!--    <label>-->
-<!--        Product Name:-->
-<!--        <input type="text" th:field="*{name}" required>-->
-<!--    </label><br>-->
-
-
-
-<!--    <label>-->
-<!--        Product Price:-->
-<!--        <input type="number" th:field="*{price}" required>-->
-<!--    </label><br>-->
-
-<!-- <br>-->
-<!--   <th:block th:if="${!product.getCharacteristicValues().isEmpty()}">-->
-<!--       Характеристики :-->
-<!--       <div th:each="value : ${product.getCharacteristicValues()}">-->
-<!--           <b th:text="${value.getCharacteristic().getName()}"></b>-->
-<!--           <input type="text" name="values" th:value="${value.getValue()}" /><br />-->
-<!--       </div>-->
-
-<!--   </th:block>-->
-
-
-
-<!--    <button type="submit">Update</button>-->
-</form>
-<br>
+    <script src="/js/main.js"></script>
 </body>
 </html>

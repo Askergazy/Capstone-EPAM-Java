@@ -1,16 +1,10 @@
 package kz.askar.shop;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
 public class ShopApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ShopApplication.class, args);
-
-
-
+        // Application is now initialized via WebApplicationInitializer
+        // This class is kept for potential utility methods if needed
     }
 
 }
